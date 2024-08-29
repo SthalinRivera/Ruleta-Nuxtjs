@@ -1,0 +1,226 @@
+<template>
+  <div class="wheel-container">
+    <div class="wheel-wrapper">
+      <canvas ref="wheelCanvas" width="600" height="600"></canvas>
+      <div class="spin-icon" @click="toggleSpin">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+        </svg>
+
+      </div>
+    </div>
+ 
+    <div class="mark-winner" :style="markWinnerStyle"></div>
+    <TruthOrDareModal v-if="isModalOpen" :player="selectedPlayer" @close="isModalOpen = false" />
+
+    <p v-if="selectedPlayer" class="selected-player">
+      Seleccionado: {{ selectedPlayer }}
+    </p>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted, computed, watch } from 'vue';
+import { useGameStore } from '@/stores/gameStore';
+
+
+const store = useGameStore();
+const spinning = ref(false);
+const selectedPlayer = ref<string | null>(null);
+const wheelCanvas = ref<HTMLCanvasElement | null>(null);
+const isModalOpen = ref(false);
+
+const rotation = ref(0);
+const pos_ini = ref(0);
+let movement: number | null = null;
+let speed = ref(10);
+
+const drawWheel = () => {
+  const canvas = wheelCanvas.value;
+  if (!canvas) return;
+
+  const context = canvas.getContext('2d');
+  if (!context) return;
+
+  const center = canvas.width / 2;
+  const radius = center;
+
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw the outer circle
+  context.beginPath();
+  context.arc(center, center, radius, 0, 2 * Math.PI);
+  context.fillStyle = '#33333333';
+  context.fill();
+
+  context.beginPath();
+  context.arc(center, center, radius - 10, 0, 2 * Math.PI);
+  context.fillStyle = 'black';
+  context.fill();
+
+  // Draw each segment
+  store.players.forEach((player, i) => {
+    const startAngle = (i / store.players.length) * 2 * Math.PI;
+    const endAngle = ((i + 1) / store.players.length) * 2 * Math.PI;
+    context.beginPath();
+    context.moveTo(center, center);
+    context.arc(center, center, radius - 20, startAngle, endAngle);
+    context.lineTo(center, center);
+    context.fillStyle = randomColor();
+    context.fill();
+    context.save();
+    context.translate(center, center);
+    context.rotate((startAngle + endAngle) / 2);
+    context.translate(-center, -center);
+    context.font = '13px Comic Sans MS';
+    context.textAlign = 'right';
+    context.fillStyle = 'white';
+    context.fillText(player, canvas.width - 30, center);
+    context.restore();
+  });
+};
+
+const randomColor = () => {
+  const ar_digit = ['2', '3', '4', '5', '6', '7', '8', '9'];
+  let color = '';
+  for (let i = 0; i < 6; i++) {
+    const pos = Math.floor(Math.random() * ar_digit.length);
+    color += ar_digit[pos];
+  }
+  return `#${color}`;
+};
+
+const toggleSpin = () => {
+  if (spinning.value) {
+    clearInterval(movement as number);
+    spinning.value = false;
+    stopWheelGradually();  // Llamamos a la función que detiene lentamente la rueda
+  } else {
+    speed.value = 10;  // Velocidad inicial de giro
+    movement = setInterval(() => {
+      pos_ini.value += speed.value;
+      if (wheelCanvas.value) {
+        wheelCanvas.value.style.transform = `rotate(${pos_ini.value}deg)`;
+      }
+    }, 20);
+    spinning.value = true;
+
+    setTimeout(() => {
+      spinning.value = false;
+      stopWheelGradually();  // Después de 2 segundos, empezamos a reducir la velocidad
+    }, 1000);
+  }
+};
+
+const stopWheelGradually = () => {
+  const reduceSpeed = setInterval(() => {
+    if (speed.value > 0) {
+      speed.value -= 0.1;  // Reducimos la velocidad poco a poco
+    } else {
+      clearInterval(reduceSpeed);
+      speed.value = 0;
+      selectRandomPlayer();  // Una vez que la rueda se detiene, seleccionamos un jugador
+    }
+  }, 10);
+};
+
+const selectRandomPlayer = () => {
+  const index = Math.floor(Math.random() * store.players.length);
+  selectedPlayer.value = store.players[index];
+};
+
+const markWinnerStyle = computed(() => {
+  if (!selectedPlayer.value) return {};
+
+  const playerIndex = store.players.indexOf(selectedPlayer.value);
+  const angle = (playerIndex / store.players.length) * 360;
+
+  const translateX = 50 * Math.cos(angle * (Math.PI / 180));
+  const translateY = 50 * Math.sin(angle * (Math.PI / 180));
+
+  return {
+    transform: `translate(${translateX}px, ${translateY}px) rotate(${angle}deg)`
+  };
+});
+
+// Mostrar el modal cuando selectedPlayer cambia
+watch(selectedPlayer, (newValue) => {
+  if (newValue) {
+    isModalOpen.value = true;
+  }
+});
+
+onMounted(() => {
+  drawWheel();
+});
+</script>
+
+<style scoped>
+.wheel-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  color: #fff;
+  font-family: sans-serif;
+}
+
+.wheel-wrapper {
+  position: relative;
+}
+
+canvas {
+  margin-top: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.spin-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.spin-button {
+  margin-top: 200px;
+  padding: 10px 20px;
+  font-size: 18px;
+  background: #bf780f;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.mark-winner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: red;
+  border-radius: 50%;
+  top: calc(50% - 10px);
+  left: calc(50% - 10px);
+  z-index: 10;
+}
+
+.selected-player {
+  margin-top: 1rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #000;
+}
+</style>
