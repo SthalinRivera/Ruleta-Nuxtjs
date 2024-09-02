@@ -1,24 +1,23 @@
 <template>
-  <div class="wheel-container">
-    <div class="wheel-wrapper">
-      <canvas ref="wheelCanvas" width="600" height="600"></canvas>
-      <div class="spin-icon" @click="toggleSpin">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-        </svg>
 
+  <div class="">
+    <div class="flex justify-center overflow-hidden">
+      <div class="wheel-wrapper">
+        <canvas ref="wheelCanvas" width="600" height="600"></canvas>
+        <div class="spin-icon" @click="toggleSpin">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+          </svg>
+        </div>
       </div>
-    </div>
- 
-    <div class="mark-winner" :style="markWinnerStyle"></div>
-    <TruthOrDareModal v-if="isModalOpen" :player="selectedPlayer" @close="isModalOpen = false" />
 
-    <p v-if="selectedPlayer" class="selected-player">
-      Seleccionado: {{ selectedPlayer }}
-    </p>
+      <div class="mark-winner" :style="markWinnerStyle"></div>
+      <TruthOrDareModal v-if="isModalOpen" :player="selectedPlayer" @close="isModalOpen = false" />
+    </div>
   </div>
+
 </template>
 
 <script setup lang="ts">
@@ -83,7 +82,7 @@ const drawWheel = () => {
 };
 
 const randomColor = () => {
-  const ar_digit = ['2', '3', '4', '5', '6', '7', '8', '9'];
+  const ar_digit = ['0', '1', '2', '3', '4', '5', '6'];
   let color = '';
   for (let i = 0; i < 6; i++) {
     const pos = Math.floor(Math.random() * ar_digit.length);
@@ -133,13 +132,10 @@ const selectRandomPlayer = () => {
 
 const markWinnerStyle = computed(() => {
   if (!selectedPlayer.value) return {};
-
   const playerIndex = store.players.indexOf(selectedPlayer.value);
   const angle = (playerIndex / store.players.length) * 360;
-
   const translateX = 50 * Math.cos(angle * (Math.PI / 180));
   const translateY = 50 * Math.sin(angle * (Math.PI / 180));
-
   return {
     transform: `translate(${translateX}px, ${translateY}px) rotate(${angle}deg)`
   };
@@ -158,14 +154,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.wheel-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 50px;
-  color: #fff;
-  font-family: sans-serif;
-}
+
 
 .wheel-wrapper {
   position: relative;
@@ -175,6 +164,8 @@ canvas {
   margin-top: 10px;
   position: relative;
   z-index: 1;
+  width: 300px;
+
 }
 
 .spin-icon {
@@ -187,7 +178,7 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 1);
   border-radius: 50%;
   color: white;
   font-size: 24px;
@@ -195,32 +186,13 @@ canvas {
   z-index: 10;
 }
 
-.spin-button {
-  margin-top: 200px;
-  padding: 10px 20px;
-  font-size: 18px;
-  background: #bf780f;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  z-index: 10;
-}
 
-.mark-winner {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  background: red;
-  border-radius: 50%;
-  top: calc(50% - 10px);
-  left: calc(50% - 10px);
-  z-index: 10;
-}
-
-.selected-player {
-  margin-top: 1rem;
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #000;
+@media (max-width: 600px) {
+  canvas {
+    width: 300px;
+    /* Ajusta el ancho del canvas */
+    height: 300px;
+    /* Ajusta la altura del canvas */
+  }
 }
 </style>

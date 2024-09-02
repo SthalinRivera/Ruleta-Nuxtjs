@@ -1,6 +1,6 @@
 <template>
-  <div class="p-4 max-w-md mx-auto bg-white dark:bg-gray-800 shadow-md rounded-lg">
-    <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Jugadores</h2>
+  <div class="">
+    <h2 class="text-2xl  mb-4 text-gray-900 dark:text-gray-100 text-center text font-bold">Jugadores</h2>
     <ul class="list-disc list-inside mb-4 space-y-2">
       <li v-for="player in players" :key="player" class="flex items-center justify-between py-2 px-3 bg-gray-100 dark:bg-gray-700 rounded-md">
         <span class="text-lg text-gray-800 dark:text-gray-200">{{ player }}</span>

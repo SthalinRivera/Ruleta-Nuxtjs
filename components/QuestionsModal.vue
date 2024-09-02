@@ -1,47 +1,85 @@
 <template>
   <div v-if="isVisible" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
-    <div class="bg-gray-800 p-6 rounded-lg w-full max-w-lg mx-4">
-      <h2 class="text-2xl font-bold mb-4 text-white">Preguntas Aleatorias</h2>
-      <ul v-if="questions.length" class="list-disc list-inside mb-4 space-y-2">
-        <li v-for="(question, index) in questions" :key="index" class="text-gray-300">
-          {{ question }}
-        </li>
-      </ul>
-      <p v-else class="text-gray-500">No hay preguntas disponibles.</p>
-      <button @click="closeModal" class="bg-gray-600 text-white px-4 py-2 rounded mt-4 w-full hover:bg-gray-700">
-        Cerrar
+    <div class="bg-gray-800 p-6 rounded-lg w-full max-w-lg mx-4 relative">
+      <h2 class="text-2xl font-bold mb-4 text-white">Pregunta: {{ type === 'verdad' ? 'Verdad' : 'Reto' }}</h2>
+      <p class="text-lg text-gray-300 mb-4">{{ question }}</p>
+      
+      <div v-if="timeLeft > 0" class="text-lg text-white">
+        Tiempo restante: {{ timeLeft }} segundos
+      </div>
+      <div v-else class="text-lg text-red-500">
+        ¡Se acabó el tiempo!
+      </div>
+
+      <div class="flex justify-between mt-6">
+        <button @click="handleResponse(true)" class="bg-green-500 text-white px-4 py-2 rounded flex items-center hover:bg-green-600">
+          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Aceptar
+        </button>
+        <button @click="handleResponse(false)" class="bg-red-500 text-white px-4 py-2 rounded flex items-center hover:bg-red-600">
+          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Rechazar
+        </button>
+      </div>
+      
+      <button @click="closeModal" class="absolute top-4 right-4 bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
       </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
-import { useGameStore } from '@/stores/gameStore';
+import { ref, watch, onUnmounted } from 'vue';
 
-const props = defineProps<{ isVisible: boolean; type: 'verdad' | 'reto'; onClose: () => void }>();
-const store = useGameStore();
-const questions = ref<string[]>([]);
+const props = defineProps<{ isVisible: boolean; type: 'verdad' | 'reto'; question: string }>();
+const emit = defineEmits<{ (e: 'onClose'): void; (e: 'onResponse', accepted: boolean): void }>();
 
-watchEffect(() => {
-  if (props.isVisible) {
-    questions.value = [];
-    for (let i = 0; i < 5; i++) { // Mostrar hasta 5 preguntas aleatorias
-      const question = store.getRandomQuestion(props.type);
-      console.log(`Question ${i}:`, question); // Debug
-      if (question && !questions.value.includes(question)) {
-        questions.value.push(question);
-      }
+const timeLeft = ref(30); // 30 segundos para responder
+
+let timer: number;
+
+const startTimer = () => {
+  timer = setInterval(() => {
+    if (timeLeft.value > 0) {
+      timeLeft.value--;
+    } else {
+      clearInterval(timer);
     }
-    console.log(`Final Questions:`, questions.value); // Debug
+  }, 1000);
+};
+
+watch(() => props.isVisible, (newVal) => {
+  if (newVal) {
+    timeLeft.value = 30;
+    startTimer();
+  } else {
+    clearInterval(timer);
   }
 });
 
+onUnmounted(() => {
+  clearInterval(timer);
+});
+
 const closeModal = () => {
-  props.onClose();
+  clearInterval(timer);
+  emit('onClose');
+};
+
+const handleResponse = (accepted: boolean) => {
+  clearInterval(timer);
+  emit('onResponse', accepted);
+  closeModal();
 };
 </script>
 
 <style scoped>
-/* No se requieren estilos personalizados porque todo está hecho con Tailwind CSS */
+/* Estilos adicionales si es necesario */
 </style>

@@ -30,9 +30,11 @@ export const useGameStore = defineStore('game', {
         this.saveToLocalStorage();
       }
     },
-    getRandomQuestion(type: string) {
-      const filteredQuestions = this.questions.filter(q => q.type === type);
-      console.log(`Filtered Questions for ${type}:`, filteredQuestions); // Debug
+    getRandomQuestion(type?: string) {
+      let filteredQuestions = this.questions;
+      if (type) {
+        filteredQuestions = this.questions.filter(q => q.type === type);
+      }
       if (filteredQuestions.length > 0) {
         const randomIndex = Math.floor(Math.random() * filteredQuestions.length);
         return filteredQuestions[randomIndex].question;
