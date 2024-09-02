@@ -1,10 +1,10 @@
 <template>
 
   <div class="">
-    <div class="flex justify-center overflow-hidden">
+    <div class="flex justify-center overflow-hidden mt-10">
       <div class="wheel-wrapper">
         <canvas ref="wheelCanvas" width="600" height="600"></canvas>
-        <div class="spin-icon" @click="toggleSpin">
+        <div class="spin-icon border-2 border-cyan-100 bg-slate-50" @click="toggleSpin">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -46,19 +46,14 @@ const drawWheel = () => {
   const center = canvas.width / 2;
   const radius = center;
 
-  context.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Draw the outer circle
-  context.beginPath();
-  context.arc(center, center, radius, 0, 2 * Math.PI);
-  context.fillStyle = '#33333333';
-  context.fill();
-
-  context.beginPath();
-  context.arc(center, center, radius - 10, 0, 2 * Math.PI);
-  context.fillStyle = 'black';
-  context.fill();
-
+  context.beginPath(); // Inicia un nuevo camino en el contexto del canvas
+  context.arc(center, center, radius, 0, 2 * Math.PI); // Dibuja un círculo con el centro en (center, center) y radio 'radius'
+  context.fillStyle = '#33333333'; // Establece el color de relleno del primer círculo (gris oscuro con opacidad)
+  context.fill(); // Rellena el primer círculo con el color gris oscuro
+  context.beginPath(); // Inicia un nuevo camino para el siguiente dibujo
+  context.arc(center, center, radius - 10, 0, 2 * Math.PI); // Dibuja un segundo círculo con el mismo centro pero un radio 10 píxeles menor
+  context.fillStyle = 'black'; // Establece el color de relleno del segundo círculo (negro)
+  context.fill(); // Rellena el segundo círculo con el color negro
   // Draw each segment
   store.players.forEach((player, i) => {
     const startAngle = (i / store.players.length) * 2 * Math.PI;
@@ -73,16 +68,16 @@ const drawWheel = () => {
     context.translate(center, center);
     context.rotate((startAngle + endAngle) / 2);
     context.translate(-center, -center);
-    context.font = '13px Comic Sans MS';
-    context.textAlign = 'right';
+    context.font = '24px Comic Sans MS'; // Cambiar tamaño de fuente aquí
+    context.textAlign = 'right'; // Cambiar alineación de texto para centrar
     context.fillStyle = 'white';
-    context.fillText(player, canvas.width - 30, center);
+    context.fillText(player, canvas.width - 30, center); // Ajusta la posición del texto si es necesario
     context.restore();
   });
 };
 
 const randomColor = () => {
-  const ar_digit = ['0', '1', '2', '3', '4', '5', '6'];
+  const ar_digit = ['9', '1', '2', '3', '4', '5', '8'];
   let color = '';
   for (let i = 0; i < 6; i++) {
     const pos = Math.floor(Math.random() * ar_digit.length);
@@ -154,8 +149,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
-
 .wheel-wrapper {
   position: relative;
 }
@@ -179,11 +172,13 @@ canvas {
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 1);
-  border-radius: 50%;
+  border-radius: 100%;
   color: white;
   font-size: 24px;
   cursor: pointer;
   z-index: 10;
+  border-color: blanchedalmond;
+  border: 12px;
 }
 
 

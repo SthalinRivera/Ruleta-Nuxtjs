@@ -12,19 +12,20 @@
           </svg>
         </button>
       </li>
-    </ul>
+    </ul>  
+     <div class="mb-4">
+      <select v-model="questionType" class="p-2 border border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100">
+        <option value="verdad">Verdad</option>
+        <option value="reto">Reto</option>
+      </select>
+    </div>
     <div class="flex mb-4 space-x-2">
       <input v-model="newQuestion" placeholder="Agregar pregunta" class="flex-1 p-2 border border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100" />
       <button @click="addQuestion" class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700">
         Agregar
       </button>
     </div>
-    <div class="mb-4">
-      <select v-model="questionType" class="p-2 border border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100">
-        <option value="verdad">Verdad</option>
-        <option value="reto">Reto</option>
-      </select>
-    </div>
+ 
   </div>
 </template>
 

@@ -12,4 +12,9 @@ export default defineNuxtConfig({
   },
 
   modules: ['@pinia/nuxt'],
+  runtimeConfig: {
+    public: {
+      openaiApiKey: process.env.NUXT_PUBLIC_OPENAI_API_KEY
+    }
+  },
 })

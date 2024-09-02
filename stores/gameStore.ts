@@ -5,6 +5,7 @@ export const useGameStore = defineStore('game', {
     players: [] as string[],
     questions: [] as { type: string, question: string }[],
     selectedPlayer: '',
+    generatedQuestions: [] as { type: string, question: string }[], // Añadido para mostrar preguntas generadas
   }),
   actions: {
     addPlayer(player: string) {
@@ -40,6 +41,12 @@ export const useGameStore = defineStore('game', {
         return filteredQuestions[randomIndex].question;
       }
       return null;
+    },
+    async fetchAndPreviewQuestions(userInput: string) {
+      const questions = await useChatGPT(userInput);
+      if (questions.length > 0) {
+        this.generatedQuestions = questions;
+      }
     },
     saveToLocalStorage() {
       localStorage.setItem('gameStore', JSON.stringify(this.$state));

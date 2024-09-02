@@ -1,10 +1,10 @@
 <template>
     <div
-        class="fixed z-50 w-full h-12 max-w-sm -translate-x-1/2 bg-white border border-gray-200 rounded-t-2xl bottom-0 left-1/2 dark:bg-gray-700 dark:border-gray-600 ">
+        class="fixed z-50 w-full h-16 max-w-lg -translate-x-1/2 bg-white border border-gray-200 rounded-t-2xl bottom-0 left-1/2 dark:bg-gray-700 dark:border-gray-600 ">
         <div class="grid h-full max-w-lg grid-cols-5 mx-auto items-center  ">
-            <NuxtLink to="/game" exact-active-class="active">
+            <NuxtLink to="/game" exact-active-class="active" class="">
                 <button type="button"
-                    class="inline-flex flex-col items-center justify-center px-5 rounded-s-full hover:bg-gray-50 dark:hover:bg-gray-800 group">
+                    class="inline-flex flex-col items-center justify-center p-5 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 group">
                     <svg class="w-5 h-5 mb-1 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500"
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path
@@ -15,7 +15,7 @@
             </NuxtLink>
             <NuxtLink to="/player" exact-active-class="active">
                 <button type="button"
-                    class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group">
+                    class="inline-flex flex-col items-center justify-center p-5 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 group">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6  text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -38,9 +38,9 @@
                     </button>
                 </div>
             </NuxtLink>
-            <NuxtLink to="/settings" exact-active-class="active">
+            <NuxtLink to="/generateQuestions" exact-active-class="active">
                 <button type="button"
-                    class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group">
+                    class="inline-flex flex-col items-center justify-center p-5 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 group">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor"
                         class="size-6 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">
@@ -51,9 +51,9 @@
                     <span class="sr-only">Settings</span>
                 </button>
             </NuxtLink>
-            <NuxtLink to="/profile" exact-active-class="active">
+            <NuxtLink to="/about" exact-active-class="active">
                 <button type="button"
-                    class="inline-flex flex-col items-center justify-center px-5 rounded-e-full hover:bg-gray-50 dark:hover:bg-gray-800 group">
+                    class="inline-flex flex-col items-center justify-center p-5 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 group">
                     <svg class="w-5 h-5 mb-1 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500"
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path

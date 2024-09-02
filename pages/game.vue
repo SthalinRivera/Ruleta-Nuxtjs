@@ -1,10 +1,10 @@
 <template>
-    <div class="max-w-lg mx-auto bg-white dark:bg-gray-800 h-screen ">
-      <AplicactionBarMovil />
+    <div class="max-w-lg mx-auto  ">
+
       <div >
      <SpinnerWheel />
       </div>
-      <ApplicationBar />
+    
     </div>
   </template>
   
