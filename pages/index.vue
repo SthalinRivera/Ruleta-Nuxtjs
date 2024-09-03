@@ -5,8 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute, onBeforeMount } from 'vue';
-import { defineNuxtRouteMiddleware } from '#app';
+
 
 const route = useRoute();
 

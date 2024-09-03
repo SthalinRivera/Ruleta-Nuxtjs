@@ -5,7 +5,7 @@
         Generar verdad y retos con IA.
       </h2>
       <div class="mb-4">
-        <input v-model="userInput" placeholder="Ejmplo: Hot, amor, para parejas ..."
+        <input v-model="userInput" placeholder="Ejemplo: Hot, amor, para parejas ..."
           class="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-2 rounded w-full" />
 
         <div  class="flex mt-2 w-full">
